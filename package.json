@@ -1,5 +1,5 @@
 {
-  "name": "valiant",
+  "name": "electron-boilerplate",
   "description": "",
   "version": "0.0.1",
   "author": {
@@ -9,7 +9,7 @@
   },
   "main": "src/main/index.js",
   "license": "MIT",
-  "productName": "Valiant",
+  "productName": "electron-boilerplate",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "dev": "npm-run-all --parallel dev:render dev:main",
