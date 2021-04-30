@@ -6,17 +6,15 @@ import Svg from './assets/vi_get.svg';
 
 import './style.scss';
 
-const App = () => {
-  return (
-    <div>
-      <p id='test'>Hello world!</p>
+const App = () => (
+  <div>
+    <p id='test'>Hello world!</p>
 
-      <img src='assets/image.jpg' />
-      <img src={Img} />
+    <img src='assets/image.jpg' alt='1' />
+    <img src={Img} alt='2' />
 
-      <Svg />
-    </div>
-  );
-};
+    <Svg />
+  </div>
+);
 
 ReactDOM.render(<App />, document.getElementById('app'));

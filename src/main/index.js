@@ -1,6 +1,6 @@
 require('dotenv').config();
 const path = require('path');
-const { app, BrowserWindow, BrowserView } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const url = require('url');
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -32,6 +32,7 @@ function createWindow() {
 
 async function main() {
   if (isDev) {
+    // eslint-disable-next-line global-require
     require('electron-reload')(__dirname, {
       electron: path.resolve(process.cwd(), 'node_modules/.bin/electron'),
     });
