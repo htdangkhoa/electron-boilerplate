@@ -14,6 +14,11 @@ function createWindow() {
     },
   });
 
+  if (isDev) {
+    win.maximize();
+    win.webContents.openDevTools();
+  }
+
   win.loadURL(
     isDev
       ? 'http://localhost:8080'
