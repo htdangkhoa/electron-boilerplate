@@ -3,7 +3,7 @@ const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const url = require('url');
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -11,6 +11,7 @@ function createWindow() {
     minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
@@ -31,13 +32,6 @@ function createWindow() {
 }
 
 async function main() {
-  if (isDev) {
-    // eslint-disable-next-line global-require
-    require('electron-reload')(__dirname, {
-      electron: path.resolve(process.cwd(), 'node_modules/.bin/electron'),
-    });
-  }
-
   app
     .whenReady()
     .then(() => {

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Img from './assets/image.jpg';
-import Svg from './assets/vi_get.svg';
+import { ReactComponent as Svg } from './assets/vi_get.svg';
 
 import './style.scss';
 
@@ -18,3 +18,7 @@ const App = () => (
 );
 
 ReactDOM.render(<App />, document.getElementById('app'));
+
+if (module.hot) {
+  module.hot.accept();
+}
