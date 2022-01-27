@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -18,6 +19,10 @@ module.exports = merge(true, {
   plugins: [
     isDev && new webpack.HotModuleReplacementPlugin(),
     isDev && new ReactRefreshPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash:8].css',
+      chunkFilename: '[id].[contenthash:8].css',
+    }),
     new HtmlWebpackPlugin({
       template: 'src/renderer/index.html',
       hash: true,
@@ -35,6 +40,27 @@ module.exports = merge(true, {
         options: {
           plugins: [isDev && require.resolve('react-refresh/babel')].filter(Boolean),
         },
+      },
+      {
+        test: /\.(bmp|png|jpe?g|gif|woff2?|eot|ttf|otf)$/,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              url: false,
+            },
+          },
+          {
+            loader: 'sass-loader',
+          },
+        ],
       },
       {
         test: /\.svg$/,

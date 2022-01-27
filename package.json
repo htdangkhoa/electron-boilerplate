@@ -10,6 +10,7 @@
   },
   "main": "dist/main.bundle.js",
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
     "dev:main": "webpack --config webpack/webpack.config.js",
     "dev:renderer": "webpack serve --config webpack/webpack.config.renderer.js",
@@ -17,7 +18,7 @@
     "build:main": "webpack --config webpack/webpack.config.js",
     "build:renderer": "webpack --config webpack/webpack.config.renderer.js",
     "prebuild": "rimraf dist build && npm-run-all -s build:main build:renderer",
-    "build": "electron-packager . --out=build --overwrite --all --extra-resource=dist"
+    "build": "electron-builder -wml"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.7",
@@ -40,7 +41,7 @@
     "css-loader": "^6.5.1",
     "dotenv-expand": "^6.0.1",
     "electron": "^16.0.7",
-    "electron-packager": "^15.4.0",
+    "electron-builder": "^22.14.5",
     "eslint": "^8.7.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.3.0",
@@ -63,5 +64,15 @@
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.8.0"
   },
-  "productName": "electron-boilerplate"
+  "productName": "electron-boilerplate",
+  "build": {
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "build"
+    }
+  }
 }
