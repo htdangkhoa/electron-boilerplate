@@ -1,24 +1,42 @@
-require('dotenv').config();
-const path = require('path');
-const { app, BrowserWindow } = require('electron');
-const url = require('url');
+import url from 'url';
+import path from 'path';
+import { app, BrowserWindow } from 'electron';
+import * as remoteMain from '@electron/remote/main';
+
+remoteMain.initialize();
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-function createWindow() {
-  const win = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
+/**
+ * @type {import('electron').BrowserWindow | null} win
+ */
+let win = null;
+
+const installExtensions = async () => {
+  const { default: installer } = await import('electron-devtools-installer');
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = (process.env.EXTENSIONS ?? '').split(',').map((name) => installer[name]);
+
+  installer(extensions, forceDownload).catch(console.log);
+};
+
+const createWindow = async () => {
+  if (isDev) {
+    await installExtensions();
+  }
+
+  win = new BrowserWindow({
+    show: false,
+    width: 1024,
+    height: 728,
+    minWidth: 1024,
+    minHeight: 728,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
-
-  if (isDev) {
-    win.maximize();
-    win.webContents.openDevTools();
-  }
+  remoteMain.enable(win.webContents);
 
   win.loadURL(
     isDev
@@ -26,34 +44,36 @@ function createWindow() {
       : url.format({
           protocol: 'file',
           slashes: true,
-          pathname: path.resolve(__dirname, '..', '..', 'dist', 'index.html'),
+          pathname: path.resolve(__dirname, 'index.html'),
         }),
   );
-}
 
-async function main() {
-  app
-    .whenReady()
-    .then(() => {
-      createWindow();
-
-      app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-          createWindow();
-        }
-      });
-    })
-    .catch((error) => {
-      console.error(error);
-
-      app.exit();
-    });
-
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-      app.quit();
+  win.on('ready-to-show', () => {
+    if (!win) {
+      throw new Error('"win" is not defined');
     }
-  });
-}
 
-main();
+    win.show();
+  });
+
+  win.on('closed', () => {
+    win = null;
+  });
+};
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app
+  .whenReady()
+  .then(() => {
+    createWindow();
+
+    app.on('activate', () => {
+      if (!win) createWindow();
+    });
+  })
+  .catch(console.log);
