@@ -13,9 +13,9 @@ const isDev = process.env.NODE_ENV !== 'production';
 let win = null;
 
 const installExtensions = async () => {
-  const { default: installer } = await import('electron-devtools-installer');
+  const { default: installer, others } = await import('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = (process.env.EXTENSIONS ?? '').split(',').map((name) => installer[name]);
+  const extensions = (process.env.EXTENSIONS ?? '').split(',').map((name) => others[name]);
 
   installer(extensions, forceDownload).catch(console.log);
 };
